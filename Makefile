@@ -45,9 +45,9 @@ install: check-root check-deps
         | tee "$(LOCAL_DIR)/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
 
     # Install wrapper script
-	@@sudo tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null << EOF
+	@sudo tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null << EOF
 	#!/bin/bash
-	$(INSTALL_DIR)/main.sh "\$$@"
+	$(INSTALL_DIR)/main.sh "\$@"
 	EOF
 
     # Set permissions
