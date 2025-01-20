@@ -31,7 +31,7 @@ install: check-root check-deps
 	@mkdir -p $(LOG_DIR)
 
 	# Copy and process source files
-	@find src -type d -name config -prune -o -type f -exec cp --parents {} $(INSTALL_DIR)/ \;
+	@(cd src && find . -path ./config -prune -o -type f -exec cp --parents {} $(INSTALL_DIR)/ \;)
 
 	# Process and install systemd templates
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
