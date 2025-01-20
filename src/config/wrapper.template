@@ -1,1 +1,2 @@
- "\${INSTALL_DIR}/main.sh" "$@"
+#!/bin/bash
+${INSTALL_DIR}/main.sh "$@"
