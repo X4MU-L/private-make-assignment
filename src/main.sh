@@ -25,7 +25,6 @@ if [ ! -f "/etc/profile.d/$PROJECT_NAME-env.sh" ]; then
     exit 1
 fi
 
-echo "Script directory: $SCRIPT_DIR, $HOME/mylocal/profile.d/$PROJECT_NAME-env.sh"
 # source environmental files
 source /etc/profile.d/$PROJECT_NAME-env.sh
 # Source utility functions
