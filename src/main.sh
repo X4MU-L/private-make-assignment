@@ -56,7 +56,7 @@ monitor_system() {
     CPU Usage: $cpu_usage"
 
     # log to file and journald
-    log_info "$message" "$(echo ${PROJECT_NAME} | tr '-' '_' | tr '[:lower:]' '[:upper:]')"
+    log_info "$message" "$PROJECT_NAME"
 
     # Send to Teams with individual parameters
     notify_teams "$current_time" "$system_health" "$cpu_usage" "$disk_usage" "$memory_usage"
