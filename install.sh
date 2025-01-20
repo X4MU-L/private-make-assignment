@@ -4,7 +4,7 @@
 PROJECT_NAME=${1:-"system-monitor"}
 
 # Repository information
-REPO_URL="https://github.com/X4MU-L/month2-week3-assignment"
+REPO_URL="https://github.com/X4MU-L/private-make-assignment"
 BRANCH="main"
 
 # Check if running as root
