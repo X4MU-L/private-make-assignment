@@ -37,18 +37,17 @@ install: check-root check-deps
 	@cp -r src/* $(INSTALL_DIR)/
     
     # Process and install systemd templates
-	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/systemd/service.template \
+	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
         | tee "$(LOCAL_DIR)/$(PROJECT_NAME).service" > /dev/null
-	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/systemd/timer.template \
+	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/timer.template \
         | tee "$(LOCAL_DIR)/$(PROJECT_NAME).timer" > /dev/null
-	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/systemd/journal.conf.template \
+	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/journal.conf.template \
         | tee "$(LOCAL_DIR)/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
 
-    # Install wrapper script
-	@sudo tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null <<- EOF
-	#!/bin/bash "\n$(INSTALL_DIR)/main.sh" "\$$@"
-		EOF
-
+    # update wrapper script
+	@sed "s/\$${DIR_NAME}/$(INSTALL_DIR)/g" src/config/wrapper.script \
+		| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
+    
     # Set permissions
 	@chmod +x "$(LOCAL_DIR)/bin/$(PROJECT_NAME)"
 	@chmod +x "$(INSTALL_DIR)/main.sh"
