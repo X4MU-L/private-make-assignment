@@ -17,16 +17,18 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-
-# if env file doesn't exist
-if [ ! -f "/etc/profile.d/$PROJECT_NAME-env.sh" ]; then
-    echo "Environmental file not found: /etc/profile.d/$PROJECT_NAME-env.sh"
-    echo "Please run  sudo make install"
-    exit 1
+# check if there is a PROJECT_NAME and source the env file
+if [ !  -z "$PROJECT_NAME" ]; then
+    # if env file doesn't exist
+    if [ -f "/etc/profile.d/$PROJECT_NAME-env.sh" ]; then
+        # source environmental files
+        source /etc/profile.d/$PROJECT_NAME-env.sh
+    fi
 fi
 
-# source environmental files
-source /etc/profile.d/$PROJECT_NAME-env.sh
+
+
+
 # Source utility functions
 source "$SCRIPT_DIR/utils/logger.sh"
 source "$SCRIPT_DIR/utils/utils.sh"
