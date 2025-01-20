@@ -54,17 +54,18 @@ install: check-root check-deps
 	@chmod 755 $(LOG_DIR)
 
 	# Install environment file
-	@project_upper=$(shell echo $(PROJECT_NAME) | tr '-' '_' | tr '[:lower:]' '[:upper:]')
-	@echo "export $${project_upper}_LOG_FILE=$(LOG_DIR)/$(PROJECT_NAME).log" \
+	@input_string=$(PROJECT_NAME)
+	@upper_snake_case_string=$(echo $(input_string) | tr '-' '_' | tr '[:lower:]' '[:upper:]')
+	@echo "export ${upper_snake_case_string}_LOG_FILE=$(LOG_DIR)/$(PROJECT_NAME).log" \
 		| tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
-	@echo "export $${project_upper}_ERROR_LOG=$(LOG_DIR)/$(PROJECT_NAME).error.log" \
+	@echo "export ${upper_snake_case_string}_ERROR_LOG=$(LOG_DIR)/$(PROJECT_NAME).error.log" \
 		| tee -a "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
 		
 	
 	@chmod 644 "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh"
 	
 	# Setup logrotate
-	@echo '"$(LOG_DIR)/*.log" { size 1kb rotate 7 compress delaycompress missingok notifempty create 0640 root root postrotate /usr/bin/systemctl kill -s HUP $(PROJECT_NAME).service endscript }' \ 
+	@echo '"$(LOG_DIR)/*.log" { size 1kb rotate 7 compress delaycompress missingok notifempty create 0640 root root postrotate /usr/bin/systemctl kill -s HUP $(PROJECT_NAME).service endscript }' \
 		| tee "$(LOCAL_DIR)/logrotate.d/$(PROJECT_NAME)"
 	
 	# Enable and start service
