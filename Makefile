@@ -46,8 +46,8 @@ install: check-root check-deps
 
     # update wrapper script
 	sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template
-	@sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template \
-		| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
+	# @sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template \
+	# 	| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
     
     # Set permissions
 	@chmod +x "$(LOCAL_DIR)/bin/$(PROJECT_NAME)"
