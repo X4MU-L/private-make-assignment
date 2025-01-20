@@ -54,14 +54,17 @@ install: check-root check-deps
 	@chmod 755 $(LOG_DIR)
 
     # Install environment file
-	@tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null << EOF
-	export ${PROJECT_NAME}_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
-	export ${PROJECT_NAME}_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"
-	EOF
+	@echo 'export MONITOR_SCRIPT_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
+           export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"' 
+		   | sudo tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
+# @tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null << EOF
+# export MONITOR_SCRIPT_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
+# export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"
+# EOF
 
     # Setup logrotate
 	@tee "$(LOCAL_DIR)/logrotate.d/$(PROJECT_NAME)" > /dev/null << EOF
-	$(LOG_DIR)/*.log {
+		$(LOG_DIR)/*.log {
 		daily
 		rotate 7
 		compress
