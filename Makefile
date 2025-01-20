@@ -1,9 +1,9 @@
 # Configuration
-PREFIX ?= $(HOME)/mylocal
 PROJECT_NAME ?= system-monitor
-INSTALL_DIR = $(PREFIX)/lib/$(PROJECT_NAME)
-LOG_DIR = $(PREFIX)/log/$(PROJECT_NAME)
-LOCAL_DIR = $(HOME)/mylocal
+LOCAL_DIR = /usr/local
+INSTALL_DIR = $(LOCAL_DIR)/lib/$(PROJECT_NAME)
+LOG_DIR = /var/log/$(PROJECT_NAME)
+
 .PHONY: all install uninstall clean
 
 all: check-deps check-root
@@ -24,25 +24,22 @@ install: check-root check-deps
 	@echo "Installing $(PROJECT_NAME)..."
 	# Create directories
 	@mkdir -p $(INSTALL_DIR)
-	@mkdir -p $(LOG_DIR)
-	@mkdir -p $(LOCAL_DIR)
-	@mkdir -p $(LOCAL_DIR)/journald.conf.d
-	
-	# mkdir -p /etc/profile.d
-	@mkdir -p $(LOCAL_DIR)/profile.d
-	#  mkdir -p /etc/logrotate.d
-	@mkdir -p $(LOCAL_DIR)/logrotate.d
+	@mkdir -p /etc/systemd/system
+	@mkdir -p /etc/systemd/journald.conf.d
+	@mkdir -p /etc/profile.d
 	@mkdir -p $(LOCAL_DIR)/bin
+	@mkdir -p $(LOG_DIR)
+	
 	# Copy and process source files
 	@cp -r src/* $(INSTALL_DIR)/
 	
 	# Process and install systemd templates
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
-        | tee "$(LOCAL_DIR)/$(PROJECT_NAME).service" > /dev/null
+        | tee "/etc/systemd/system/$(PROJECT_NAME).service" > /dev/null
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/timer.template \
-        | tee "$(LOCAL_DIR)/$(PROJECT_NAME).timer" > /dev/null
+        | tee "/etc/systemd/system/$(PROJECT_NAME).timer" > /dev/null
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/journal.conf.template \
-        | tee "$(LOCAL_DIR)/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
+        | tee "/etc/systemd/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
 	
 	# update wrapper script
 	@sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template \
@@ -54,23 +51,22 @@ install: check-root check-deps
 	@chmod 755 $(LOG_DIR)
 
 	# Install environment file
-	@project_upper=$(shell echo $(PROJECT_NAME) | tr '-' '_' | tr '[:lower:]' '[:upper:]')
-	@echo "export $${project_upper}_LOG_FILE=$(LOG_DIR)/$(PROJECT_NAME).log"\
-		| tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
-	@echo "export $${project_upper}_ERROR_LOG=$(LOG_DIR)/$(PROJECT_NAME).error.log" \
-		| tee -a "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
-		
-	
-	@chmod 644 "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh"
+	# create upper and maintain shell session with ;
+	@project_upper=$(shell echo $(PROJECT_NAME) | tr '-' '_' | tr '[:lower:]' '[:upper:]'); \
+	echo "export $${project_upper}_LOG_FILE=$(LOG_DIR)/$(PROJECT_NAME).log" \
+		| tee "/etc/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null; \
+	echo "export $${project_upper}_ERROR_LOG=$(LOG_DIR)/$(PROJECT_NAME).error.log" \
+		| tee -a "/etc/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
+	@chmod 644 "/etc/profile.d/$(PROJECT_NAME)-env.sh"
 	
 	# Setup logrotate
-	@echo '"$(LOG_DIR)/*.log" { size 1kb rotate 7 compress delaycompress missingok notifempty create 0640 root root postrotate /usr/bin/systemctl kill -s HUP $(PROJECT_NAME).service endscript }' \
-		| tee "$(LOCAL_DIR)/logrotate.d/$(PROJECT_NAME)"
+	@echo '"/var/log/$(PROJECT_NAME)/*.log" { size 1kb rotate 7 compress delaycompress missingok notifempty create 0640 root root postrotate /usr/bin/systemctl kill -s HUP $(PROJECT_NAME).service endscript }' \
+		| tee "/etc/logrotate.d/$(PROJECT_NAME)"
 	
 	# Enable and start service
-	systemctl daemon-reload
-	systemctl enable $(PROJECT_NAME).timer
-	sudo systemctl start $(PROJECT_NAME).timer
+	@systemctl daemon-reload
+	@systemctl enable $(PROJECT_NAME).timer
+	@sudo systemctl start $(PROJECT_NAME).timer
 
 	@echo "Installation complete!"
 	@echo "Service name: $(PROJECT_NAME)"
