@@ -46,7 +46,8 @@ install: check-root check-deps
 
     # Install wrapper script
 	@sudo tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null <<- EOF
-	#!/bin/bash "\n$(INSTALL_DIR)/main.sh" "\$$@" EOF
+	#!/bin/bash "\n$(INSTALL_DIR)/main.sh" "\$$@"
+		EOF
 
     # Set permissions
 	@chmod +x "$(LOCAL_DIR)/bin/$(PROJECT_NAME)"
