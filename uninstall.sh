@@ -12,6 +12,14 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Create temporary directory
+TMP_DIR=$(mktemp -d)
+if [ $? -ne 0 ]; then
+    echo "Failed to create temporary directory"
+    exit 1
+fi
+echo "Created temporary directory: $TMP_DIR"
+
 # Clone repository or download archive
 echo "Downloading repository..."
 if command -v git >/dev/null 2>&1; then
@@ -44,8 +52,11 @@ cd "$TMP_DIR/repo" || {
 if [ -f "Makefile" ]; then
     # No need for sudo here since we're already root
     make uninstall PROJECT_NAME="$PROJECT_NAME"
+    rm -rf "$TMP_DIR"
     echo "Uninstallation of $PROJECT_NAME complete"
+   
 else
     echo "Makefile not found, installation failed"
+    rm -rf "$TMP_DIR"
     exit 1
 fi
