@@ -3,7 +3,7 @@ Description=${PROJECT_NAME} Service
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/${PROJECT_NAME}
+ExecStart=/usr/local/bin/${PROJECT_NAME} --name=${PROJECT_NAME}
 Restart=no
 User=root
 

@@ -2,9 +2,18 @@
 
 # Get the directory where the script is located
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+FILENAME=$(basename "$0")
 
+# if env file doesn't exist
+if [ ! -f "$HOME/mylocal/profile.d/$FILENAME-env.sh" ]; then
+    echo "Environmental file not found: $HOME/mylocal/profile.d/$FILENAME-env.sh"
+    echo "Please sudo make install"
+    exit 1
+fi
+
+echo "Script directory: $SCRIPT_DIR, $HOME/mylocal/profile.d/$FILENAME-env.sh"
 # source environmental files
-source /etc/profile.d/monitor-script.sh
+source $HOME/mylocal/profile.d/$FILENAME-env.sh
 # Source utility functions
 source "$SCRIPT_DIR/utils/logger.sh"
 source "$SCRIPT_DIR/utils/utils.sh"
@@ -34,7 +43,7 @@ monitor_system() {
     CPU Usage: $cpu_usage"
 
     # log to file and journald
-    log_info "$message"
+    log_info "$message" "$(echo ${FILENAME} | tr '-' '_' | tr '[:lower:]' '[:upper:]')"
 
     # Send to Teams with individual parameters
     notify_teams "$current_time" "$system_health" "$cpu_usage" "$disk_usage" "$memory_usage"

@@ -5,7 +5,9 @@ LOG_FILE="${LOG_DIR}/system-status.log"
 # Log to file and journald
 log_info() {
     local message=$1
-    echo "$MONITOR_SCRIPT_LOG_FILE file"
-    echo -e  "\t$(get_current_time) - $message" >> "${MONITOR_SCRIPT_LOG_FILE:-LOG_FILE}"
+    ENV_NAME="${2}_LOG_FILE"
+    ENV_VALUE="${!ENV_NAME}"
+    echo "$ENV_VALUE file"
+    echo -e  "\t$(get_current_time) - $message" >> "${ENV_VALUE:-LOG_FILE}"
     echo "$message" | systemd-cat -p info -t system-monitor
 }

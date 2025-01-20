@@ -45,9 +45,8 @@ install: check-root check-deps
         | tee "$(LOCAL_DIR)/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
 
     # update wrapper script
-	sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template
-	# @sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template \
-	# 	| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
+	@sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template \
+		| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
     
     # Set permissions
 	@chmod +x "$(LOCAL_DIR)/bin/$(PROJECT_NAME)"
@@ -55,14 +54,15 @@ install: check-root check-deps
 	@chmod 755 $(LOG_DIR)
 
     # Install environment file
-	@echo 'export MONITOR_SCRIPT_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
-	export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"' \
-		| sudo tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
-# @tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null << EOF
-# export MONITOR_SCRIPT_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
-# export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"
-# EOF
-
+	@input_string=$(PROJECT_NAME)
+	@upper_snake_case_string=$(echo $(input_string) | tr '-' '_' | tr '[:lower:]' '[:upper:]')
+    @echo "export ${upper_snake_case_string}_LOG_FILE=$(LOG_DIR)/$(PROJECT_NAME).log"\
+	| tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
+    @echo "export ${upper_snake_case_string}_ERROR_LOG=$(LOG_DIR)/$(PROJECT_NAME).error.log" \
+	 | tee -a "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
+    
+	@chmod 644 "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh"
+	
     # Setup logrotate
 	@tee "$(LOCAL_DIR)/logrotate.d/$(PROJECT_NAME)" > /dev/null << EOF
 		$(LOG_DIR)/*.log {
