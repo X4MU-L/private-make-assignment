@@ -55,8 +55,8 @@ install: check-root check-deps
 
     # Install environment file
 	@echo 'export MONITOR_SCRIPT_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
-           export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"' 
-		   | sudo tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
+	export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"' \
+		| sudo tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
 # @tee "$(LOCAL_DIR)/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null << EOF
 # export MONITOR_SCRIPT_LOG_FILE="$(LOG_DIR)/$(PROJECT_NAME).log"
 # export MONITOR_SCRIPT_ERROR_LOG="$(LOG_DIR)/$(PROJECT_NAME).error.log"
