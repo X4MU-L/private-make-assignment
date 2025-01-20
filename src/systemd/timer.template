@@ -1,0 +1,10 @@
+[Unit]
+Description=${PROJECT_NAME} Timer
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Unit=${PROJECT_NAME}.service
+
+[Install]
+WantedBy=timers.target

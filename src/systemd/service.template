@@ -1,0 +1,18 @@
+[Unit]
+Description=${PROJECT_NAME} Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/${PROJECT_NAME}
+Restart=no
+User=root
+
+# Configure logging
+StandardOutput=append:/var/log/${PROJECT_NAME}/${PROJECT_NAME}.log
+StandardError=append:/var/log/${PROJECT_NAME}/${PROJECT_NAME}.error.log
+
+# Create log directory if it doesn't exist
+ExecStartPre=/bin/mkdir -p /var/log/${PROJECT_NAME}
+
+[Install]
+WantedBy=multi-user.target
