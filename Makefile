@@ -29,7 +29,7 @@ install: check-root check-deps
 	@mkdir -p /etc/profile.d
 	@mkdir -p $(LOCAL_DIR)/bin
 	@mkdir -p $(LOG_DIR)
-	
+
 	# Copy and process source files
 	@cp -r src/* $(INSTALL_DIR)/
 	
@@ -61,11 +61,11 @@ install: check-root check-deps
 	
 	# Setup logrotate
 	@echo '"/var/log/$(PROJECT_NAME)/*.log" { size 1kb rotate 7 compress delaycompress missingok notifempty create 0640 root root postrotate /usr/bin/systemctl kill -s HUP $(PROJECT_NAME).service endscript }' \
-		| tee "/etc/logrotate.d/$(PROJECT_NAME)"
+		| tee "/etc/logrotate.d/$(PROJECT_NAME)" > /dev/null
 	
 	# Enable and start service
 	@systemctl daemon-reload
-	@systemctl enable $(PROJECT_NAME).timer
+	@systemctl enable $(PROJECT_NAME).timer  > /dev/null
 	@sudo systemctl start $(PROJECT_NAME).timer
 
 	@echo "Installation complete!"

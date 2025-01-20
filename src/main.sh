@@ -2,18 +2,32 @@
 
 # Get the directory where the script is located
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-FILENAME=$(basename "$0")
+PROJECT_NAME=""
+# Parse command-line arguments
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --name=*)
+      PROJECT_NAME="${1#*=}"
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
 
 # if env file doesn't exist
-if [ ! -f "$HOME/mylocal/profile.d/$FILENAME-env.sh" ]; then
-    echo "Environmental file not found: $HOME/mylocal/profile.d/$FILENAME-env.sh"
-    echo "Please sudo make install"
+if [ ! -f "/etc/profile.d/$PROJECT_NAME-env.sh" ]; then
+    echo "Environmental file not found: /etc/profile.d/$PROJECT_NAME-env.sh"
+    echo "Please run  sudo make install"
     exit 1
 fi
 
-echo "Script directory: $SCRIPT_DIR, $HOME/mylocal/profile.d/$FILENAME-env.sh"
+echo "Script directory: $SCRIPT_DIR, $HOME/mylocal/profile.d/$PROJECT_NAME-env.sh"
 # source environmental files
-source $HOME/mylocal/profile.d/$FILENAME-env.sh
+source $HOME/mylocal/profile.d/$PROJECT_NAME-env.sh
 # Source utility functions
 source "$SCRIPT_DIR/utils/logger.sh"
 source "$SCRIPT_DIR/utils/utils.sh"
