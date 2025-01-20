@@ -31,7 +31,7 @@ install: check-root check-deps
 	@mkdir -p $(LOG_DIR)
 
 	# Copy and process source files
-	@rsync -av --exclude='config' src/ $(INSTALL_DIR)/
+	@cp -r src/!(config) $(INSTALL_DIR)/
 	
 	# Process and install systemd templates
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
