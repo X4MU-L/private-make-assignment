@@ -1,5 +1,5 @@
 /var/log/${PROJECT_NAME}/*.log { 
-    size 1kb 
+    size 1k
     rotate 7 
     compress
     missingok
@@ -9,4 +9,3 @@
         /usr/bin/systemctl kill -s HUP ${PROJECT_NAME}.service 
     endscript 
 }
-		
