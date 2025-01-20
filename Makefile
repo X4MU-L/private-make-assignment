@@ -8,8 +8,8 @@ LOCAL_DIR = $(HOME)/mylocal
 
 all: check-deps check-root
 check-root:
-	@echo "Checking root privileges... $(EUID)"
-	@if [ "$$EUID" -ne 0 ]; then \
+	@echo "Checking root privileges... $$(id -u)"
+	@if [ "$$(id -u)" -ne 0 ]; then \
 		echo "This script must be run as root. Please use sudo."; \
 		exit 1; \
     fi
