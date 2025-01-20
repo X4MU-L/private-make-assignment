@@ -8,5 +8,5 @@ log_info() {
     ENV_NAME="${2}_LOG_FILE"
     ENV_VALUE="${!ENV_NAME}"
     echo -e  "\t$(get_current_time) - $message" >> "${ENV_VALUE:-LOG_FILE}"
-    echo "$message" | systemd-cat -p info -t "$(echo ${ENV_NAME} | tr '_' '-' | tr '[:lower:]' '[:upper:]')"
+    echo "$message" | systemd-cat -p info -t "$(echo $2 | tr '_' '-' | tr '[:upper:]' '[:lower:]')"
 }
