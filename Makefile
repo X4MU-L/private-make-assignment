@@ -6,8 +6,9 @@ LOG_DIR = $(PREFIX)/log/$(PROJECT_NAME)
 LOCAL_DIR = $(HOME)/mylocal
 .PHONY: all install uninstall clean
 
-all: check-deps
+all: check-deps check-root
 check-root:
+	@echo "Checking root privileges... $(EUID)"
 	@if [ "$$EUID" -ne 0 ]; then \
 		echo "This script must be run as root. Please use sudo."; \
 		exit 1; \
