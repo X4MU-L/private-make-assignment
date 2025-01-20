@@ -45,8 +45,8 @@ install: check-root check-deps
         | tee "$(LOCAL_DIR)/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
 
     # update wrapper script
-	sed "s/\$${INSTALL_DIR}/$(INSTALL_DIR)/g" src/config/wrapper.template
-	@sed "s/\$${INSTALL_DIR}/$(INSTALL_DIR)/g" src/config/wrapper.template \
+	sed "s/\$${INSTALL_DIR}/\$(INSTALL_DIR)/g" src/config/wrapper.template
+	@sed "s/\$${INSTALL_DIR}/\$(INSTALL_DIR)/g" src/config/wrapper.template \
 		| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
     
     # Set permissions
