@@ -11,17 +11,21 @@ export WEEK2_TEAMS_WEBHOOK_ENV=<teams_webhook_url>
 the montior information will be sent to your webhook url
 other i will be the one receiving the information 🌚 🌚
 
+if name_of_project is not provided..
+
+the script will be installed as **system-monitor**
+
 ```bash
-git clone https://github.com/X4MU-L/month2-week3-assignment.git
+git clone https://github.com/X4MU-L/private-make-assignment.git
 cd month2-week3-assignment
-sudo bash install.sh [<name_of_command>]
+sudo make install [PROJECT_NAME=name_of_project]
 ```
 
 ```bash
 # one line command
-curl -sSL https://raw.githubusercontent.com/X4MU-L/month2-week3-assignment/main/install.sh| sudo bash
+curl -sSL https://raw.githubusercontent.com/X4MU-L/private-make-assignment/main/install.sh | sudo bash
 # or
-curl -sSL https://raw.githubusercontent.com/X4MU-L/month2-week3-assignment/main/install.sh| sudo bash -s -- <name_of_command>
+curl -sSL https://raw.githubusercontent.com/X4MU-L/private-make-assignment/main/install.sh | sudo bash -s -- <name_of_command>
 ```
 
 # create nginx server and capture and analyze packages

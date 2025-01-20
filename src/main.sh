@@ -27,7 +27,7 @@ fi
 
 echo "Script directory: $SCRIPT_DIR, $HOME/mylocal/profile.d/$PROJECT_NAME-env.sh"
 # source environmental files
-source $HOME/mylocal/profile.d/$PROJECT_NAME-env.sh
+source /etc/profile.d/$PROJECT_NAME-env.sh
 # Source utility functions
 source "$SCRIPT_DIR/utils/logger.sh"
 source "$SCRIPT_DIR/utils/utils.sh"
@@ -57,7 +57,7 @@ monitor_system() {
     CPU Usage: $cpu_usage"
 
     # log to file and journald
-    log_info "$message" "$(echo ${FILENAME} | tr '-' '_' | tr '[:lower:]' '[:upper:]')"
+    log_info "$message" "$(echo ${PROJECT_NAME} | tr '-' '_' | tr '[:lower:]' '[:upper:]')"
 
     # Send to Teams with individual parameters
     notify_teams "$current_time" "$system_health" "$cpu_usage" "$disk_usage" "$memory_usage"
