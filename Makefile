@@ -31,7 +31,7 @@ install: check-root check-deps
 	@mkdir -p $(LOG_DIR)
 
 	# Copy and process source files
-	@cp -r src/* $(INSTALL_DIR)/
+	@rsync -av --exclude='config' src/ $(INSTALL_DIR)/
 	
 	# Process and install systemd templates
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
@@ -60,7 +60,7 @@ install: check-root check-deps
 	@chmod 644 "/etc/profile.d/$(PROJECT_NAME)-env.sh"
 	
 	# Setup logrotate
-	@echo '"/var/log/$(PROJECT_NAME)/*.log" { size 1kb rotate 7 compress delaycompress missingok notifempty create 0640 root root postrotate /usr/bin/systemctl kill -s HUP $(PROJECT_NAME).service endscript }' \
+	@sed "s|\$${PROJECT_NAME}|$(PROJECT_NAME)|g" src/config/logrotate.template \
 		| tee "/etc/logrotate.d/$(PROJECT_NAME)" > /dev/null
 	
 	# Enable and start service

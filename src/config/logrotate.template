@@ -1,0 +1,12 @@
+/var/log/${PROJECT_NAME}/*.log { 
+    size 1kb 
+    rotate 7 
+    compress
+    missingok
+    notifempty
+    create 0640 root root 
+    postrotate 
+        /usr/bin/systemctl kill -s HUP ${PROJECT_NAME}.service 
+    endscript 
+}
+		
