@@ -3,7 +3,7 @@
 # Get project name from argument or use default
 PROJECT_NAME=${1:-"system-monitor"}
 # Repository information
-REPO_URL="https://github.com/X4MU-L/private-make-assignment"
+REPO_URL="https://github.com/X4MU-L/system-monitor"
 BRANCH="main"
 
 # Check if running as root
@@ -18,7 +18,6 @@ if [ $? -ne 0 ]; then
     echo "Failed to create temporary directory"
     exit 1
 fi
-echo "Created temporary directory: $TMP_DIR"
 
 # Clone repository or download archive
 echo "Downloading repository..."
@@ -54,7 +53,7 @@ if [ -f "Makefile" ]; then
     make uninstall PROJECT_NAME="$PROJECT_NAME"
     rm -rf "$TMP_DIR"
     echo "Uninstallation of $PROJECT_NAME complete"
-   
+
 else
     echo "Makefile not found, installation failed"
     rm -rf "$TMP_DIR"

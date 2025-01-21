@@ -17,7 +17,7 @@ If `name_of_command` is not provided, the script will be installed as **system-m
 
 ```bash
 # clone the repository
-$ git clone https://github.com/X4MU-L/private-make-assignment.git <dir_name>
+$ git clone https://github.com/X4MU-L/system-monitor.git <dir_name>
 # change dir into the project directory
 $ cd month2-week3-assignment # or cd <dir_name>
 # install the project (you can provide an optional project name for the script)
@@ -29,12 +29,12 @@ $ [WEEK2_TEAMS_WEBHOOK_ENV=<teams_webhook_url>]  system-monitor # or <name_of_co
 
 ```bash
 # One line command
-$ curl -sSL https://raw.githubusercontent.com/X4MU-L/private-make-assignment/main/install.sh | sudo bash
+$ curl -sSL https://raw.githubusercontent.com/X4MU-L/system-monitor/main/install.sh | sudo bash
 # you can as well run system-monitor to initiate the script outside of the systemd
 # you can optionally set the env variable as a one line variable to the shell session (best to export to the shell session 😪 or add to ~/.zshrc or ~/.profile for the systemd Use)
 $ [WEEK2_TEAMS_WEBHOOK_ENV=<teams_webhook_url>] system-monitor
 # or
-$ curl -sSL https://raw.githubusercontent.com/X4MU-L/private-make-assignment/main/install.sh | sudo bash -s -- <name_of_command>
+$ curl -sSL https://raw.githubusercontent.com/X4MU-L/system-monitor/main/install.sh | sudo bash -s -- <name_of_command>
 # you can as well run <name_of_command> to initiate the script outside of the systemd
 # you can optionally set the env variable as a one line variable to the shell session (best to export to the shell session 😪 or add to ~/.zshrc or ~/.profile for the systemd Use)
 $ [WEEK2_TEAMS_WEBHOOK_ENV=<teams_webhook_url>]  <name_of_command>

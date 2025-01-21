@@ -4,7 +4,7 @@
 PROJECT_NAME=${1:-"system-monitor"}
 
 # Repository information
-REPO_URL="https://github.com/X4MU-L/private-make-assignment"
+REPO_URL="https://github.com/X4MU-L/system-monitor"
 BRANCH="main"
 INSTALL_DIR="/usr/local/bin/$PROJECT_NAME"
 
