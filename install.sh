@@ -56,11 +56,12 @@ cd "$TMP_DIR/repo" || {
 # Run make install
 if [ -f "Makefile" ]; then
     # Run make install with project name
-    make install PROJECT_NAME="$PROJECT_NAME"
+    make install PROJECT_NAME="$PROJECT_NAME" 2>&1 | grep -v "make: \*\*\*"
     # check if make install was successful
     if [ $? -ne 0 ]; then
         echo "Installation failed"
         # Cleanup
+        echo "Cleaning up..."
         rm -rf "$TMP_DIR"
         exit 1
     fi

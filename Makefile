@@ -8,16 +8,16 @@ LOG_DIR = /var/log/$(PROJECT_NAME)
 
 all: check-deps check-root
 check-root:
-	@echo "Checking root privileges... $$(id -u)"
+	@echo "Checking root privileges..."
 	@if [ "$$(id -u)" -ne 0 ]; then \
-		echo "This script must be run as root. Please use sudo."; \
+		echo "This script must be run as root. Please use sudo make install."; \
 		exit 1; \
     fi
 
 check-deps:
 	@echo "Checking dependencies..."
-	@for cmd in df free top curl logger systemd-cat awk sort head nproc lscpu; do \
-		which $$cmd >/dev/null 2>&1 || { echo "$$cmd is required but not installed."; exit 1; } \
+	@for cmd in df free top curl logger systemd-cat awk sort head nproc lscpu readlink; do \
+		which $$cmd >/dev/null 2>&1 || { echo "$$cmd is required but not installed."  >&2; exit 1 2>/dev/null; } \
 	done
 
 install: check-root check-deps
