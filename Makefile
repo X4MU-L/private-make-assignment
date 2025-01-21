@@ -17,7 +17,7 @@ check-root:
 check-deps:
 	@echo "Checking dependencies..."
 	@for cmd in df free top curl logger systemd-cat awk sort head nproc lscpu readlink; do \
-		which $$cmd >/dev/null 2>&1 || { echo "$$cmd is required but not installed."  >&2; exit 1 2>/dev/null; } \
+		which $$cmd >/dev/null 2>&1 || { echo "$$cmd is required but not installed."  >&2; $(error) } \
 	done
 
 install: check-root check-deps
@@ -31,7 +31,12 @@ install: check-root check-deps
 	@mkdir -p $(LOG_DIR)
 
 	# Copy and process source files
-	@(cd src && find . -path ./config -prune -o -type f -exec cp --parents {} $(INSTALL_DIR)/ \;)
+	@(cd src && find . -path ./config -prune -o -type f -exec cp --parents {} $(INSTALL_DIR)/ \;) \
+	|| { echo "Failed to copy files. Please run on a Linux machine."; \
+	     echo "Cleaning up..."; \
+	     rm -rf $(INSTALL_DIR); \
+	     rm -rf $(LOG_DIR); \
+	     exit 1; }
 
 	# Process and install systemd templates
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
