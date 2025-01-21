@@ -22,7 +22,7 @@ check-deps:
 
 install: check-root check-deps
 	@echo "Installing $(PROJECT_NAME)..."
-	# Create directories
+# Create directories
 	@mkdir -p $(INSTALL_DIR)
 	@mkdir -p /etc/systemd/system
 	@mkdir -p /etc/systemd/journald.conf.d
@@ -30,7 +30,7 @@ install: check-root check-deps
 	@mkdir -p $(LOCAL_DIR)/bin
 	@mkdir -p $(LOG_DIR)
 
-	# Copy and process source files
+# Copy and process source files
 	@(cd src && find . -path ./config -prune -o -type f -exec cp --parents {} $(INSTALL_DIR)/ \;) \
 	|| { echo "Failed to copy files. Please run on a Linux machine."; \
 	     echo "Cleaning up..."; \
@@ -38,7 +38,7 @@ install: check-root check-deps
 	     rm -rf $(LOG_DIR); \
 	     exit 1; }
 
-	# Process and install systemd templates
+# Process and install systemd templates
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/service.template \
         | tee "/etc/systemd/system/$(PROJECT_NAME).service" > /dev/null
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/timer.template \
@@ -46,17 +46,17 @@ install: check-root check-deps
 	@sed "s/\$${PROJECT_NAME}/$(PROJECT_NAME)/g" src/config/journal.conf.template \
         | tee "/etc/systemd/journald.conf.d/$(PROJECT_NAME)-journal.conf" > /dev/null
 	
-	# update wrapper script
+# update wrapper script
 	@sed "s|\$${INSTALL_DIR}|$(INSTALL_DIR)|g" src/config/wrapper.template \
 		| tee "$(LOCAL_DIR)/bin/$(PROJECT_NAME)" > /dev/null
     
-	# Set permissions
+# Set permissions
 	@chmod +x "$(LOCAL_DIR)/bin/$(PROJECT_NAME)"
 	@chmod +x "$(INSTALL_DIR)/main.sh"
 	@chmod 755 $(LOG_DIR)
 
-	# Install environment file
-	# create upper and maintain shell session with ;
+# Install environment file
+# create upper and maintain shell session with ;
 	@project_upper=$(shell echo $(PROJECT_NAME) | tr '-' '_' | tr '[:lower:]' '[:upper:]'); \
 	echo "export $${project_upper}_LOG_FILE=$(LOG_DIR)/$(PROJECT_NAME).log" \
 		| tee "/etc/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null; \
@@ -64,11 +64,11 @@ install: check-root check-deps
 		| tee -a "/etc/profile.d/$(PROJECT_NAME)-env.sh" > /dev/null
 	@chmod 644 "/etc/profile.d/$(PROJECT_NAME)-env.sh"
 	
-	# Setup logrotate
+# Setup logrotate
 	@sed "s|\$${PROJECT_NAME}|$(PROJECT_NAME)|g" src/config/logrotate.template \
 		| tee "/etc/logrotate.d/$(PROJECT_NAME)" > /dev/null
 	
-	# Enable and start service
+# Enable and start service
 	@systemctl daemon-reload
 	@systemctl enable $(PROJECT_NAME).timer  > /dev/null
 	@sudo systemctl start $(PROJECT_NAME).timer
