@@ -6,10 +6,18 @@ PROJECT_NAME=${1:-"system-monitor"}
 # Repository information
 REPO_URL="https://github.com/X4MU-L/private-make-assignment"
 BRANCH="main"
+INSTALL_DIR="/usr/local/bin/$PROJECT_NAME"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root or with sudo"
+    exit 1
+fi
+
+# Check if project is already installed
+if [ -f "$INSTALL_DIR" ]; then
+    echo "Project is already installed..."
+    echo "run make uninstall $PROJECT_NAME to uninstall"
     exit 1
 fi
 
