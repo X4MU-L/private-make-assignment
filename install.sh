@@ -19,27 +19,30 @@ if [ $? -ne 0 ]; then
     echo "Failed to create temporary directory"
     exit 1
 fi
-echo "Created temporary directory: $TMP_DIR"
 
 # Clone repository or download archive
 echo "Downloading repository..."
 if command -v git >/dev/null 2>&1; then
-    if ! git clone --branch "$BRANCH" "$REPO_URL" "$TMP_DIR/repo"; then
+    if ! git clone --branch "$BRANCH" "$REPO_URL" "$TMP_DIR/repo" >/dev/null; then
+        # Fallback to archive download if git clone fails
         echo "Git clone failed, falling back to archive download..."
         if ! curl -L "$REPO_URL/archive/refs/heads/$BRANCH.tar.gz" | tar xz -C "$TMP_DIR"; then
             echo "Archive download failed"
             rm -rf "$TMP_DIR"
             exit 1
         fi
+        # Move the extracted directory to the repo directory
         mv "$TMP_DIR"/*-"$BRANCH" "$TMP_DIR/repo"
     fi
 else
+    # if git is not found, use archive download
     echo "Git not found, using archive download ..."
     if ! curl -L "$REPO_URL/archive/refs/heads/$BRANCH.tar.gz" | tar xz -C "$TMP_DIR"; then
         echo "Archive download failed"
         rm -rf "$TMP_DIR"
         exit 1
     fi
+    # Move the extracted directory to the repo directory
     mv "$TMP_DIR"/*-"$BRANCH" "$TMP_DIR/repo"
 fi
 
@@ -52,8 +55,15 @@ cd "$TMP_DIR/repo" || {
 
 # Run make install
 if [ -f "Makefile" ]; then
-    # No need for sudo here since we're already root
+    # Run make install with project name
     make install PROJECT_NAME="$PROJECT_NAME"
+    # check if make install was successful
+    if [ $? -ne 0 ]; then
+        echo "Installation failed"
+        # Cleanup
+        rm -rf "$TMP_DIR"
+        exit 1
+    fi
 else
     echo "Makefile not found, installation failed"
     rm -rf "$TMP_DIR"
